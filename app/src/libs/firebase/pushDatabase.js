@@ -1,9 +1,9 @@
 import getFirebaseClient from './getClient'
 
-const setDatabase = async (doc, data) => {
+const pushDatabase = async (doc, data) => {
   const { initFirebase } = getFirebaseClient()
   const database = initFirebase.database()
-  await database.ref(doc).set(data)
+  await database.ref(doc).push(data)
 }
 
-export default setDatabase
+export default pushDatabase
