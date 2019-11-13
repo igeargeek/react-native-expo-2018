@@ -1,11 +1,25 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, TouchableHighlight } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
+import QRCode from 'react-native-qrcode-svg';
+import getFirebaseClient from '../libs/firebase/getClient'
 
 export default class MyQrCode extends Component {
+    componentWillMount = () => {
+        const { firebase } = getFirebaseClient()
+        let user = firebase.auth().currentUser;
+        this.setState({ uid: user.uid })
+      }
+      state = {
+        uid: '',
+      }
     render() {
         return (
             <View style={styles.container}>
-                <Text>My QR Code page </Text>
+                <QRCode 
+                    size={300}
+                    value={this.state.uid }
+                />
+                <Text>My QR Code</Text>
             </View>
         );
     }
@@ -14,11 +28,7 @@ export default class MyQrCode extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingTop: 22,
-    },
-    item: {
-        padding: 10,
-        fontSize: 18,
-        height: 44,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
 });
