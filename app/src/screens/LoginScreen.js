@@ -56,7 +56,13 @@ class LoginScreen extends React.Component {
             value={this.state.password}
             onChangeText={(password) => this.setState({ password })}
             secureTextEntry />
-          {this.state.loading ? <Text>Loading...</Text> : <Button title="Login" onPress={this.login} />}
+          {this.state.loading ? <Text>Loading...</Text> :
+            <View style={styles.buttonLayout} >
+              <Button title="Login" onPress={this.login} />
+              <View style={{ width: 10 }} />
+              <Button title="Register" onPress={() => { this.props.navigation.navigate('Register') }} />
+            </View>
+          }
         </View>
       </Container>
     )
@@ -81,7 +87,12 @@ const styles = StyleSheet.create({
     width: '60%',
     height: 40,
     marginBottom: 10,
-  }
+  },
+  buttonLayout: {
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
 })
 
 export default LoginScreen
