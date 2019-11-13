@@ -2,7 +2,9 @@ import React from 'react'
 import { View, Image, Text, StyleSheet, Button, TextInput } from 'react-native'
 import Container from '../components/Container'
 import login from '../libs/firebase/login'
+import setDatabase from '../libs/firebase/setDatabase'
 import onAuthStateChanged from '../libs/firebase/onAuthStateChanged'
+import { pushNotificationToken } from '../libs/notification'
 
 class LoginScreen extends React.Component {
   static navigationOptions = {
@@ -14,12 +16,18 @@ class LoginScreen extends React.Component {
     loading: false,
     email: '',
     password: '',
+    pushToken: '',
   }
 
-  componentWillMount = () => {
+  componentDidMount = async () => {
+    const token = await pushNotificationToken()
+    this.setState({ pushToken: token })
     onAuthStateChanged()
       .then((user) => {
         if (user) {
+          setDatabase('users/'+user.uid, {
+            pushToken: this.state.pushToken
+          })
           this.props.navigation.replace('ChatRoom')
         } else {
           this.setState({ authLoading: false })
@@ -32,6 +40,9 @@ class LoginScreen extends React.Component {
     const { email, password } = this.state
     login(email, password)
       .then((data) => {
+        setDatabase('users/'+data.uid, {
+          pushToken: this.state.pushToken
+        })
         this.props.navigation.replace('ChatRoom')
       })
       .catch(() => {
