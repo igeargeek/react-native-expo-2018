@@ -1,9 +1,10 @@
 import React from 'react'
-import { View, TouchableHighlight } from 'react-native'
+import { View, TouchableHighlight, Text } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 import getDatabase from '../libs/firebase/getDatabase'
 import setDatabase from '../libs/firebase/setDatabase'
 import ChatList from '../sections/ChatList'
+import logout from '../libs/firebase/logout'
 
 class ChatRoomScreen extends React.Component {
   static navigationOptions = ({ navigation }) => ({
@@ -13,6 +14,19 @@ class ChatRoomScreen extends React.Component {
         navigation.navigate('AddFriend')
       }} style={{ marginLeft: -50 }} >
         <Ionicons name="md-person-add" size={32} color="#333" />
+      </TouchableHighlight>
+    ),
+    headerLeft: () => (
+      <TouchableHighlight onPress={() => {
+        logout().then((data) => {
+          navigation.replace('LoginScreen')
+        })
+        .catch((error) => {
+          console.log(error)
+          alert('user ไม่ถูกต้อง')
+        })
+        }}>
+        <Text>Logout</Text>
       </TouchableHighlight>
     ),
   })
