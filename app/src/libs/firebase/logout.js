@@ -1,8 +1,8 @@
 import getFirebaseClient from './getClient'
 
-const logout = (email, password) =>
-  new Promise((resolve, reject) => {
-    const { firebase } = getFirebaseClient()
-  })
+const logout = () => {
+  const { firebase } = getFirebaseClient()
+  return firebase.auth().signOut();
+}
 
 export default logout

@@ -25,9 +25,7 @@ class LoginScreen extends React.Component {
     onAuthStateChanged()
       .then((user) => {
         if (user) {
-          setDatabase('users/'+user.uid, {
-            pushToken: this.state.pushToken
-          })
+          setDatabase('users/' + user.uid + '/pushToken', this.state.pushToken)
           this.props.navigation.replace('ChatRoom')
         } else {
           this.setState({ authLoading: false })
@@ -40,9 +38,7 @@ class LoginScreen extends React.Component {
     const { email, password } = this.state
     login(email, password)
       .then((data) => {
-        setDatabase('users/'+data.uid, {
-          pushToken: this.state.pushToken
-        })
+        setDatabase('users/' + data.uid + '/pushToken', this.state.pushToken)
         this.props.navigation.replace('ChatRoom')
       })
       .catch(() => {
