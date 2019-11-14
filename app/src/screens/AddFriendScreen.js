@@ -25,7 +25,7 @@ class AddFriendScreen extends React.Component {
               renderIcon={() => <Image style={{width: 25, height: 25}} source={require('../../assets/logo.png')} />}
               renderSelectedIcon={() => <Image style={{width: 25, height: 25}} source={require('../../assets/logo.png')} />}
               onPress={() => this.setState({ selectedTab: 'home' })}>
-              <CameraScanner />
+              <CameraScanner onChangePage={() => this.props.navigation.replace('ChatRoom') }/>
             </TabNavigator.Item>
             <TabNavigator.Item
               selected={this.state.selectedTab === 'profile'}
