@@ -5,6 +5,7 @@ import getDatabase from '../libs/firebase/getDatabase'
 import setDatabase from '../libs/firebase/setDatabase'
 import ChatList from '../sections/ChatList'
 import logout from '../libs/firebase/logout'
+import user from '../libs/firebase/getUserInfo'
 
 class ChatRoomScreen extends React.Component {
   static navigationOptions = ({ navigation }) => ({
@@ -31,13 +32,33 @@ class ChatRoomScreen extends React.Component {
     ),
   })
 
-  componentWillMount = async () => {
-    this.getData()
+  state = { 
+    userInfo: {},
+    chatData: []
   }
 
-  getData = () => {
-    getDatabase('users/4', (data) => {
-      console.log(data)
+  componentDidMount() {
+    this.getUserData()
+    this.getChatData()
+  }
+
+  getUserData = () => {
+    getDatabase(`users/${user.currentUser.uid}`, (data) => {
+      this.setState({
+        userInfo: data
+      })
+    })
+  }
+
+  getChatData = () => {
+    getDatabase(`chatRooms/${user.currentUser.uid}`, (data) => {
+      let result = Object.keys(data).map(function(key) {
+        return {...data[key], chatId: key};
+      });
+
+      this.setState({
+        chatData: result
+      })
     })
   }
 
@@ -54,7 +75,7 @@ class ChatRoomScreen extends React.Component {
       // <Button title="Go to Jane's profile" onPress={() => navigate('ChatRoom', { name: 'Jane' })} />
       <View style={{ width: '100%', height: '100%' }}>
         {/* <Button title="Add user" onPress={this.addData} /> */}
-        <ChatList navigation={navigation} />
+        <ChatList navigation={navigation} chatData={this.state.chatData} />
       </View>
     )
   }
