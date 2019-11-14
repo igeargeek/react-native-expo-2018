@@ -5,6 +5,7 @@ import Container from '../components/Container'
 import pushDatabase from '../libs/firebase/pushDatabase'
 import onAuthStateChanged from '../libs/firebase/onAuthStateChanged'
 import getFirebaseClient from '../libs/firebase/getClient'
+import { sendPushNotification } from '../libs/notification'
 
 let isFirst = true
 
@@ -135,10 +136,13 @@ class ChatScreen extends React.Component {
       name: user.displayName || user.email,
       avatar: user.photoURL || 'https://i.pinimg.com/originals/a6/58/32/a65832155622ac173337874f02b218fb.png',
     }
+    
     await pushDatabase(doc, data)
+    await sendPushNotification('{{friend token}}', 'ข้อความใหม่ส่งถึงคุณ!', msg.text)
   }
 
   onSend = (messages = []) => {
+    
     this.addMessageToDatabase(messages)
     this.setState(previousState => ({
       messages: GiftedChat.append(previousState.messages, messages),
