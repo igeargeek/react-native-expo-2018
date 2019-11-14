@@ -6,7 +6,7 @@ const firebaseConfig = {
   apiKey: "AIzaSyCRIrsbOmaxtCoIy_l0bIc3gmYWVObHEkE",
   authDomain: "igg-chat-app.firebaseio.com",
   databaseURL: "https://igg-chat-app-f3c73.firebaseio.com",
-  storageBucket: "igg-chat-app"
+  storageBucket: "igg-chat-app-f3c73.appspot.com"
 };
 
 const getClient = () => {
