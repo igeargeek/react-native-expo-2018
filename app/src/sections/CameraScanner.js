@@ -49,9 +49,7 @@ export default class CameraScanner extends Component {
         let user = firebase.auth().currentUser;
 
         getOnce(`friends/${user.uid}/${data}`).once('value').then(function(snapshot) {
-            console.log('snapshot: ', snapshot);
-
-            if(snapshot && snapshot.chatRoomID) {
+            if(snapshot.val()) {
                 alert(`Already friends!`);
             } else {
                 let timestamp = Date.now()
