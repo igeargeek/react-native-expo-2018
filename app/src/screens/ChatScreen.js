@@ -20,19 +20,24 @@ class ChatScreen extends React.Component {
     messagesTemp: null,
     chatId: '',
     user: null,
+    friend: null
   }
 
-  componentWillMount = () => {
+  componentWillMount = async () => {
+    const chatId = this.props.navigation.getParam('chatId', '')
+    const friend = {
+      uid: this.props.navigation.getParam('uid', ''),
+      avatar: this.props.navigation.getParam('avatar', ''),
+      name: this.props.navigation.getParam('name', ''),
+    }
     const { initFirebase } = getFirebaseClient()
     const database = initFirebase.database()
-    this.setState({ database })
+    await this.setState({ database, chatId, friend })
     this.getUser()
   }
 
   getMessage = (timestamp = new Date().getTime()) => {
-    const { database } = this.state
-    const chatId = this.props.navigation.getParam('chatId', '')
-    this.setState({ chatId })
+    const { database, chatId } = this.state
     const doc = `chats/${chatId}`
     database.ref(doc).orderByChild('timestamp').endAt(timestamp).limitToLast(10).once('value')
       .then(async (snapshot) => {
@@ -44,10 +49,16 @@ class ChatScreen extends React.Component {
   }
 
   getUser = () => {
+    const { database } = this.state
     onAuthStateChanged()
-      .then(async (user) => {
-        if (user) {
-          await this.setState({ user })
+      .then(async (userTemp) => {
+        if (userTemp) {
+          const doc = `users/${userTemp.uid}`
+          database.ref(doc).once('value')
+            .then(async (snapshot) => {
+              console.log( snapshot.val())
+            })
+          await this.setState({ userTemp })
           this.getMessage()
         } else {
           this.props.navigation.replace('Login')
@@ -69,7 +80,7 @@ class ChatScreen extends React.Component {
       createdAt: new Date(el.timestamp),
       user: {
         _id: user.uid === el.uid ? 1 : 2,
-        avatar: 'https://placeimg.com/140/140/any',
+        avatar: user.uid === el.uid ? user.avatar : friend.avatar,
       }
     }))
     this.setState(previousState => ({
