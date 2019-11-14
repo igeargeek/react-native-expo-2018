@@ -3,6 +3,7 @@ import { FlatList, StyleSheet, Text, View, TouchableHighlight } from 'react-nati
 
 export default class FlatListBasics extends Component {
     render() {
+        const { navigate } = this.props.navigation
         return (
             <View style={styles.container}>
                 <FlatList
@@ -17,7 +18,14 @@ export default class FlatListBasics extends Component {
                         { key: 'Julie' },
                     ]}
                     renderItem={({ item }) =>
-                        <TouchableHighlight onPress={() => {alert('test')}} style={{borderBottomColor: '#ddd', borderBottomWidth: 1}}>
+                        <TouchableHighlight onPress={() => {
+                            navigate('Chat', {
+                                chatId: 'dhjpNUeSAvMREHAT5hu45P612jf',
+                                uid: 'PoDYlOmraAXDHdpW6li8X7aJHdj2',
+                                avatar: 'https://i.pinimg.com/originals/a6/58/32/a65832155622ac173337874f02b218fb.png',
+                                name: 'Bot'
+                            })
+                        }} style={{ borderBottomColor: '#ddd', borderBottomWidth: 1 }}>
                             <Text style={styles.item}>{item.key}</Text>
                         </TouchableHighlight>
                     }

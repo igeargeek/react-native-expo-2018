@@ -49,12 +49,12 @@ class ChatRoomScreen extends React.Component {
   }
 
   render() {
-    const { navigate } = this.props.navigation;
+    const { navigation } = this.props;
     return (
       // <Button title="Go to Jane's profile" onPress={() => navigate('ChatRoom', { name: 'Jane' })} />
       <View style={{ width: '100%', height: '100%' }}>
         {/* <Button title="Add user" onPress={this.addData} /> */}
-        <ChatList />
+        <ChatList navigation={navigation} />
       </View>
     )
   }

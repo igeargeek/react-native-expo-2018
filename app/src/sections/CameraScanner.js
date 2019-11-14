@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Button } from 'react-native';
-import Constants from 'expo-constants';
+import { StyleSheet, Text, View, Button, Alert } from 'react-native';
 import * as Permissions from 'expo-permissions';
-
 import { BarCodeScanner } from 'expo-barcode-scanner';
+import setDatabase from '../libs/firebase/setDatabase'
+import getFirebaseClient from '../libs/firebase/getClient'
+import getOnce from '../libs/firebase/getOnce'
 
 export default class CameraScanner extends Component {
     state = {
@@ -19,6 +20,33 @@ export default class CameraScanner extends Component {
         const { status } = await Permissions.askAsync(Permissions.CAMERA);
         this.setState({ hasCameraPermission: status === 'granted' });
     };
+
+    handleBarCodeScanned = ({ type, data }) => {
+        const { firebase } = getFirebaseClient()
+        let user = firebase.auth().currentUser;
+
+        getOnce(`friends/${user.uid}/${data}`).once('value').then(snapshot => {
+            if(snapshot.val()) {
+                Alert.alert(
+                    'Sorry',
+                    'Your are both already friends!',
+                    [
+                      {text: 'OK', onPress: () => this.props.onChangePage()},
+                    ],
+                  );
+            } else {
+                let timestamp = Date.now()
+                setDatabase(`friends/${user.uid}/${data}`, {
+                    chatRoomID: timestamp,
+                })
+                setDatabase(`friends/${data}/${user.uid}`, {
+                    chatRoomID: timestamp,
+                })
+            }
+        });
+        
+        this.setState({ scanned: true });
+    }
 
     render() {
         const { hasCameraPermission, scanned } = this.state;
@@ -42,11 +70,6 @@ export default class CameraScanner extends Component {
         </View>
         );
     }
-    handleBarCodeScanned = ({ type, data }) => {
-        this.setState({ scanned: true });
-        // TODO create firebase chat room here!!! by using data(uid)
-        alert(`Bar code with type ${type} and data ${data} has been scanned!`);
-    };
 }
 
 const styles = StyleSheet.create({

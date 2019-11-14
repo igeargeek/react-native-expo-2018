@@ -11,7 +11,7 @@ class AddFriendScreen extends React.Component {
   }
 
   state = {
-    selectedTab: 'home',
+    selectedTab: 'Scan',
   }
 
   render() {
@@ -20,19 +20,19 @@ class AddFriendScreen extends React.Component {
         <View style={{ width: '100%', height: '100%' }}>
           <TabNavigator>
             <TabNavigator.Item
-              selected={this.state.selectedTab === 'home'}
-              title="Home"
-              renderIcon={() => <Image style={{width: 25, height: 25}} source={require('../../assets/logo.png')} />}
-              renderSelectedIcon={() => <Image style={{width: 25, height: 25}} source={require('../../assets/logo.png')} />}
-              onPress={() => this.setState({ selectedTab: 'home' })}>
-              <CameraScanner />
+              selected={this.state.selectedTab === 'Scan'}
+              title="Scan"
+              renderIcon={() => <Image style={{width: 25, height: 25}} source={require('../../assets/camera.png')} />}
+              renderSelectedIcon={() => <Image style={{width: 25, height: 25}} source={require('../../assets/camera.png')} />}
+              onPress={() => this.setState({ selectedTab: 'Scan' })}>
+              <CameraScanner onChangePage={() => this.props.navigation.replace('ChatRoom') }/>
             </TabNavigator.Item>
             <TabNavigator.Item
-              selected={this.state.selectedTab === 'profile'}
-              title="Profile"
-              renderIcon={() => <Image style={{width: 25, height: 25}} source={require('../../assets/logo.png')} />}
-              renderSelectedIcon={() => <Image style={{width: 25, height: 25}} source={require('../../assets/logo.png')} />}
-              onPress={() => this.setState({ selectedTab: 'profile' })}>
+              selected={this.state.selectedTab === 'myQrCode'}
+              title="My QR Code"
+              renderIcon={() => <Image style={{width: 25, height: 25}} source={require('../../assets/QRcode.png')} />}
+              renderSelectedIcon={() => <Image style={{width: 25, height: 25}} source={require('../../assets/QRcode.png')} />}
+              onPress={() => this.setState({ selectedTab: 'myQrCode' })}>
               <MyQrCode />
             </TabNavigator.Item>
           </TabNavigator>

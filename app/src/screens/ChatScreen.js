@@ -5,6 +5,7 @@ import Container from '../components/Container'
 import pushDatabase from '../libs/firebase/pushDatabase'
 import onAuthStateChanged from '../libs/firebase/onAuthStateChanged'
 import getFirebaseClient from '../libs/firebase/getClient'
+import { sendPushNotification } from '../libs/notification'
 
 let isFirst = true
 
@@ -20,21 +21,26 @@ class ChatScreen extends React.Component {
     messagesTemp: null,
     chatId: '',
     user: null,
+    friend: null
   }
 
-  componentWillMount = () => {
+  componentWillMount = async () => {
+    const chatId = this.props.navigation.getParam('chatId', '')
+    const friend = {
+      uid: this.props.navigation.getParam('uid', ''),
+      avatar: this.props.navigation.getParam('avatar', ''),
+      name: this.props.navigation.getParam('name', ''),
+    }
     const { initFirebase } = getFirebaseClient()
     const database = initFirebase.database()
-    this.setState({ database })
+    await this.setState({ database, chatId, friend })
     this.getUser()
   }
 
-  getMessage = (timestamp = new Date().getTime()) => {
-    const { database } = this.state
-    const chatId = this.props.navigation.getParam('chatId', '')
-    this.setState({ chatId })
+  getMessage = () => {
+    const { database, chatId } = this.state
     const doc = `chats/${chatId}`
-    database.ref(doc).orderByChild('timestamp').endAt(timestamp).limitToLast(10).once('value')
+    database.ref(doc).limitToLast(50).once('value')
       .then(async (snapshot) => {
         await this.setState({ messagesTemp: snapshot.val() })
         this.appendMessage()
@@ -44,11 +50,21 @@ class ChatScreen extends React.Component {
   }
 
   getUser = () => {
+    const { database } = this.state
     onAuthStateChanged()
-      .then(async (user) => {
-        if (user) {
-          await this.setState({ user })
-          this.getMessage()
+      .then(async (userTemp) => {
+        if (userTemp) {
+          const doc = `users/${userTemp.uid}`
+          database.ref(doc).once('value')
+            .then(async (snapshot) => {
+              const temp = snapshot.val()
+              const user = {
+                uid: userTemp.uid,
+                ...temp,
+              }
+              await this.setState({ user })
+              this.getMessage()
+            })
         } else {
           this.props.navigation.replace('Login')
         }
@@ -56,20 +72,21 @@ class ChatScreen extends React.Component {
   }
 
   appendMessage = () => {
-    const { messagesTemp, user } = this.state
+    const { messagesTemp, user, friend } = this.state
     const msgTemp = []
     if (messagesTemp) {
       Object.keys(messagesTemp).forEach((key) => {
         msgTemp.push(messagesTemp[key])
       })
     }
+    msgTemp.reverse()
     const messages = msgTemp.map(el => ({
       _id: el.timestamp,
       text: el.message,
       createdAt: new Date(el.timestamp),
       user: {
         _id: user.uid === el.uid ? 1 : 2,
-        avatar: 'https://placeimg.com/140/140/any',
+        avatar: user.uid === el.uid ? user.avatar : friend.avatar,
       }
     }))
     this.setState(previousState => ({
@@ -78,7 +95,7 @@ class ChatScreen extends React.Component {
   }
 
   watchMessage = () => {
-    const { database, chatId, user } = this.state
+    const { database, chatId, user, friend } = this.state
     const doc = `chats/${chatId}`
     database.ref(doc).limitToLast(1).on('child_added', (snapshot) => {
       if (isFirst) {
@@ -92,7 +109,7 @@ class ChatScreen extends React.Component {
             createdAt: new Date(msg.timestamp),
             user: {
               _id: 2,
-              avatar: 'https://placeimg.com/140/140/any',
+              avatar: friend.avatar,
             }
           }]
           this.setState(previousState => ({
@@ -104,27 +121,18 @@ class ChatScreen extends React.Component {
   }
 
   addMessageToDatabase = async (messages) => {
-    const doc = `chats/${this.state.chatId}`
-    const { database } = this.state
-    let sort = 0
-    await database.ref(doc).limitToLast(5).once('child_added')
-      .then((snapshot) => {
-        const data = snapshot.val()
-        sort = data.sort
-      })
+    const { user, chatId } = this.state
+    const doc = `chats/${chatId}`
     const [msg] = messages
-    const { user } = this.state
     const timestamp = new Date().getTime()
     const data = {
       timestamp,
       message: msg.text,
       type: 'text',
       uid: user.uid,
-      sort: sort - 1,
-      name: user.displayName || user.email,
-      avatar: user.photoURL || 'https://i.pinimg.com/originals/a6/58/32/a65832155622ac173337874f02b218fb.png',
     }
     await pushDatabase(doc, data)
+    await sendPushNotification('{{friend token}}', 'ข้อความใหม่ส่งถึงคุณ!', msg.text)
   }
 
   onSend = (messages = []) => {
