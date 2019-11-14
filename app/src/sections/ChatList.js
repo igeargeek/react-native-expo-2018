@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { FlatList, StyleSheet, Text, View, TouchableHighlight } from 'react-native';
+import { FlatList, StyleSheet, Text, View, TouchableHighlight, Image } from 'react-native';
 
 export default class FlatListBasics extends Component {
     render() {
@@ -7,26 +7,16 @@ export default class FlatListBasics extends Component {
         return (
             <View style={styles.container}>
                 <FlatList
-                    data={[
-                        { key: 'Devin' },
-                        { key: 'Jackson' },
-                        { key: 'James' },
-                        { key: 'Joel' },
-                        { key: 'John' },
-                        { key: 'Jillian' },
-                        { key: 'Jimmy' },
-                        { key: 'Julie' },
-                    ]}
+                    data={this.props.chatData}
+                    keyExtractor={item => item.chatId}
                     renderItem={({ item }) =>
                         <TouchableHighlight onPress={() => {
-                            navigate('Chat', {
-                                chatId: 'dhjpNUeSAvMREHAT5hu45P612jf',
-                                uid: 'PoDYlOmraAXDHdpW6li8X7aJHdj2',
-                                avatar: 'https://i.pinimg.com/originals/a6/58/32/a65832155622ac173337874f02b218fb.png',
-                                name: 'Bot'
-                            })
+                            navigate('Chat', item)
                         }} style={{ borderBottomColor: '#ddd', borderBottomWidth: 1 }}>
-                            <Text style={styles.item}>{item.key}</Text>
+                            <View style={{flexDirection: 'row', marginHorizontal: 10, marginVertical: 5, alignItems: 'flex-start'}}>
+                                <Image source={{uri: item.avatar}} style={{width: 60, height: 60, borderRadius: 30}} />
+                                <Text style={styles.item}>{item.name}</Text>
+                            </View>
                         </TouchableHighlight>
                     }
                 />
