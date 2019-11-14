@@ -1,4 +1,5 @@
 import React from 'react'
+import { KeyboardAvoidingView } from 'react-native'
 import { GiftedChat } from 'react-native-gifted-chat'
 import Container from '../components/Container'
 import pushDatabase from '../libs/firebase/pushDatabase'
@@ -136,13 +137,15 @@ class ChatScreen extends React.Component {
   render() {
     return (
       <Container loading={this.state.loading} >
-        <GiftedChat
-          messages={this.state.messages}
-          onSend={messages => this.onSend(messages)}
-          user={{
-            _id: 1,
-          }}
-        />
+        <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding" keyboardVerticalOffset={100}>
+          <GiftedChat
+            messages={this.state.messages}
+            onSend={messages => this.onSend(messages)}
+            user={{
+              _id: 1,
+            }}
+          />
+        </KeyboardAvoidingView>
       </Container>
     );
   }
