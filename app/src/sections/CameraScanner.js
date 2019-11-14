@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, Button } from 'react-native';
-import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
-
 import { BarCodeScanner } from 'expo-barcode-scanner';
+import setDatabase from '../libs/firebase/setDatabase'
+import getFirebaseClient from '../libs/firebase/getClient'
+import getOnce from '../libs/firebase/getOnce'
 
 export default class CameraScanner extends Component {
     state = {
@@ -42,11 +43,29 @@ export default class CameraScanner extends Component {
         </View>
         );
     }
+
     handleBarCodeScanned = ({ type, data }) => {
+        const { firebase } = getFirebaseClient()
+        let user = firebase.auth().currentUser;
+
+        getOnce(`friends/${user.uid}/${data}`).once('value').then(function(snapshot) {
+            console.log('snapshot: ', snapshot);
+
+            if(snapshot && snapshot.chatRoomID) {
+                alert(`Already friends!`);
+            } else {
+                let timestamp = Date.now()
+                setDatabase(`friends/${user.uid}/${data}`, {
+                    chatRoomID: timestamp,
+                })
+                setDatabase(`friends/${data}/${user.uid}`, {
+                    chatRoomID: timestamp,
+                })
+            }
+        });
+        
         this.setState({ scanned: true });
-        // TODO create firebase chat room here!!! by using data(uid)
-        alert(`Bar code with type ${type} and data ${data} has been scanned!`);
-    };
+    }
 }
 
 const styles = StyleSheet.create({
