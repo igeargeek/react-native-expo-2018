@@ -25,7 +25,7 @@ class AddFriendScreen extends React.Component {
               renderIcon={() => <Image style={{width: 25, height: 25}} source={require('../../assets/camera.png')} />}
               renderSelectedIcon={() => <Image style={{width: 25, height: 25}} source={require('../../assets/camera.png')} />}
               onPress={() => this.setState({ selectedTab: 'Scan' })}>
-              <CameraScanner onChangePage={() => this.props.navigation.replace('ChatRoom') }/>
+              <CameraScanner onChangePage={() => this.props.navigation.goBack() }/>
             </TabNavigator.Item>
             <TabNavigator.Item
               selected={this.state.selectedTab === 'myQrCode'}
