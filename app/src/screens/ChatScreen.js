@@ -32,7 +32,6 @@ class ChatScreen extends React.Component {
     const { initFirebase } = getFirebaseClient()
     const database = initFirebase.database()
     await this.setState({ database, chatId, friend })
-    this.watchMessage()
     this.getUser()
   }
 
@@ -49,8 +48,8 @@ class ChatScreen extends React.Component {
                 uid: userTemp.uid,
                 ...temp,
               }
-              await this.setState({ user })
-              this.getMessage()
+              await this.setState({ user, loading: false })
+              this.watchMessage()
             })
         } else {
           this.props.navigation.replace('Login')
@@ -63,21 +62,18 @@ class ChatScreen extends React.Component {
     const doc = `chats/${chatId}`
     database.ref(doc).limitToLast(50).on('child_added', (snapshot) => {
       const msg = snapshot.val()
-      console.log('msg',msg)
-      // if (msg.uid !== user.uid) {
-        const messages = [{
-          _id: `${msg.timestamp}`,
-          text: msg.message,
-          createdAt: new Date(msg.timestamp),
-          user: {
-            _id: friend.uid,
-            avatar: friend.avatar,
-          }
-        }]
-        this.setState(previousState => ({
-          messages: GiftedChat.append(previousState.messages, messages),
-        }))
-      // }
+      const messages = [{
+        _id: `${msg.timestamp}`,
+        text: msg.message,
+        createdAt: new Date(msg.timestamp),
+        user: {
+          _id: msg.uid,
+          avatar: msg.uid === user.uid ? user.avatar : friend.avatar,
+        }
+      }]
+      this.setState(previousState => ({
+        messages: GiftedChat.append(previousState.messages, messages),
+      }))
     })
   }
 
@@ -101,24 +97,20 @@ class ChatScreen extends React.Component {
   }
 
   render() {
-    const { user } = this.state
+    const { user, loading } = this.state
     return (
-      <Container loading={this.state.loading} >
+      <Container loading={loading} >
         <KeyboardAvoidingView
           style={{ flex: 1 }}
           behavior="padding"
           keyboardVerticalOffset={Platform.OS === 'ios' ? 50 : 100}>
-          {
-            user ?
-              <GiftedChat
-                messages={this.state.messages}
-                onSend={messages => this.onSend(messages)}
-                user={{
-                  _id: user.uid,
-                }}
-              />
-              : null
-          }
+          <GiftedChat
+            messages={this.state.messages}
+            onSend={messages => this.onSend(messages)}
+            user={{
+              _id: user ? user.uid : '',
+            }}
+          />
         </KeyboardAvoidingView>
       </Container>
     );
