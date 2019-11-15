@@ -44,18 +44,25 @@ class RegisterScreen extends React.Component {
         <TextInput
             style={styles.input}
             value={this.state.name}
+            placeholder='please input your name'
+            autoCapitalize='none'
             onChangeText={(name) => this.setState({ name })}
           />
         <Text style={styles.text}>email</Text>
         <TextInput
             style={styles.input}
             value={this.state.email}
+            placeholder='please input the email'
+            autoCapitalize='none'
             onChangeText={(email) => this.setState({ email })}
           />
         <Text style={styles.text}>password</Text>
         <TextInput
           style={styles.input}
           value={this.state.password}
+          placeholder='please input the password'
+          autoCapitalize='none'
+          secureTextEntry={true}
           onChangeText={(password) => this.setState({ password })}
         />
 
