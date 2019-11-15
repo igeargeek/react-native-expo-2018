@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Text, StyleSheet, View, Button, TouchableOpacity } from 'react-native'
+import { Text, View, Button, TouchableOpacity } from 'react-native'
 import * as Permissions from 'expo-permissions';
 import { Camera } from 'expo-camera';
 
@@ -24,7 +24,6 @@ export default class CameraScreen extends Component {
     snap = async () => {
         if (this.camera) {
             let photo = await this.camera.takePictureAsync();
-            console.log(photo)
             const { navigation } = this.props;
             navigation.goBack();
             navigation.state.params.onTakePhoto(photo.uri);
@@ -75,5 +74,3 @@ export default class CameraScreen extends Component {
         )
     }
 }
-
-const styles = StyleSheet.create({})

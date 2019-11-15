@@ -75,7 +75,6 @@ class LoginScreen extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    // backgroundColor: 'red',
     height: '100%',
     justifyContent: 'center',
     alignItems: 'center',

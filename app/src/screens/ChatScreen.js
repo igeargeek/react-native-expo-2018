@@ -35,6 +35,16 @@ class ChatScreen extends React.Component {
     this.getUser()
   }
 
+  componentWillUnmount = () => {
+    this.clearConnection()
+  }
+
+  clearConnection = () => {
+    const { database, chatId } = this.state
+    const doc = `chats/${chatId}`
+    database.ref(doc).off()
+  }
+
   getUser = () => {
     const { database } = this.state
     onAuthStateChanged()
