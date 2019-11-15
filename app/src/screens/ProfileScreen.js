@@ -1,11 +1,12 @@
 import React from 'react'
-import { View, Text, SafeAreaView, Image, Button } from 'react-native'
+import { View, Text, SafeAreaView, Image, Button, TouchableOpacity } from 'react-native'
 import Container from '../components/Container'
 import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
 import { Camera } from 'expo-camera';
 import uploadImage from '../libs/firebase/uploadImage'
 import setDatabase from '../libs/firebase/setDatabase'
+import { Ionicons } from '@expo/vector-icons'
 
 class ProfileScreen extends React.Component {
   static navigationOptions = {
@@ -70,21 +71,31 @@ class ProfileScreen extends React.Component {
     return (
       <Container>
         <SafeAreaView style={{ flex: 1, alignItems: 'center' }}>
-          <Text style={{ fontSize: 20, marginVertical: 10 }}>เลือกรูปโปรไฟล์</Text>
+          <Text style={{ fontSize: 20, marginTop: 30, marginBottom: 10 }}>เลือกรูปโปรไฟล์</Text>
           <Image
             style={{ width: 250, height: 250, borderRadius: 125, marginVertical: 20 }}
             source={ image == null ? require('../../assets/placeholderAvatar.png') : {uri: image} } /> 
 
-          <Button
-            title="Pick an image from camera roll"
-            onPress={this._pickImage}
-          />
+          <View style={{flexDirection: 'row', marginBottom: 50}}>
+            <TouchableOpacity
+              title="Open Camera Roll"
+              onPress={this._pickImage}
+            >
+              <View style={{width: 60, height: 60, backgroundColor: '#606060', alignItems: 'center', justifyContent: 'center', borderRadius: 30, margin: 10}}>
+                <Ionicons name="md-images" size={32} color="#fff" />
+              </View>
+            </TouchableOpacity>
 
-          <Button
-            title="Take a picture from camera"
-            onPress={() => this.props.navigation.navigate('Camera', { onTakePhoto: this.onTakePhoto })}
-          />
-
+            <TouchableOpacity
+              title="Open Camera"
+              onPress={() => this.props.navigation.navigate('Camera', { onTakePhoto: this.onTakePhoto })}
+            >
+              <View style={{width: 60, height: 60, backgroundColor: '#606060', alignItems: 'center', justifyContent: 'center', borderRadius: 30, margin: 10}}>
+                <Ionicons name="md-camera" size={32} color="#fff" />
+              </View>
+            </TouchableOpacity>
+          </View>
+          
           <Button title="Register" onPress={this.saveImage} />
 
         </SafeAreaView>

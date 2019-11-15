@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Text, StyleSheet, View, Button, TouchableOpacity } from 'react-native'
 import * as Permissions from 'expo-permissions';
 import { Camera } from 'expo-camera';
+import { Ionicons } from '@expo/vector-icons'
 
 export default class CameraScreen extends Component {
     state = {
@@ -24,7 +25,6 @@ export default class CameraScreen extends Component {
     snap = async () => {
         if (this.camera) {
             let photo = await this.camera.takePictureAsync();
-            console.log(photo)
             const { navigation } = this.props;
             navigation.goBack();
             navigation.state.params.onTakePhoto(photo.uri);
@@ -48,9 +48,8 @@ export default class CameraScreen extends Component {
                 }}>
                     <TouchableOpacity
                         style={{
-                        flex: 0.1,
-                        alignSelf: 'flex-end',
-                        alignItems: 'center',
+                            alignSelf: 'flex-end',
+                            margin: 15
                         }}
                         onPress={() => {
                         this.setState({
@@ -60,15 +59,19 @@ export default class CameraScreen extends Component {
                                 : Camera.Constants.Type.back,
                         });
                         }}>
-                        <Text style={{ fontSize: 18, marginBottom: 10, color: 'white' }}> Flip </Text>
+                        <Ionicons name="md-reverse-camera" size={32} color="#fff" />
                     </TouchableOpacity>
                 </View>
             </Camera>
             <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-                <Button
-                    title="shoot"
+                <TouchableOpacity
+                    title="Open Camera"
                     onPress={this.snap}
-                />
+                    >
+                    <View style={{width: 60, height: 60, backgroundColor: '#606060', alignItems: 'center', justifyContent: 'center', borderRadius: 30, margin: 10}}>
+                        <Ionicons name="md-camera" size={32} color="#fff" />
+                    </View>
+                </TouchableOpacity>
             </View>
             
         </View>
