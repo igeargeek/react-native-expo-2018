@@ -1,13 +1,11 @@
 import React from 'react'
-import { KeyboardAvoidingView } from 'react-native'
+import { KeyboardAvoidingView, Platform } from 'react-native'
 import { GiftedChat } from 'react-native-gifted-chat'
 import Container from '../components/Container'
 import pushDatabase from '../libs/firebase/pushDatabase'
 import onAuthStateChanged from '../libs/firebase/onAuthStateChanged'
 import getFirebaseClient from '../libs/firebase/getClient'
 import { sendPushNotification } from '../libs/notification'
-
-let isFirst = true
 
 class ChatScreen extends React.Component {
   static navigationOptions = {
@@ -18,135 +16,109 @@ class ChatScreen extends React.Component {
     database: null,
     loading: true,
     messages: [],
-    messagesTemp: null,
     chatId: '',
     user: null,
+    friend: null
   }
 
-  componentWillMount = () => {
+  componentDidMount = async () => {
+    const chatId = this.props.navigation.getParam('chatId', '')
+    const friend = {
+      uid: this.props.navigation.getParam('uid', ''),
+      avatar: this.props.navigation.getParam('avatar', ''),
+      name: this.props.navigation.getParam('name', ''),
+      pushToken: this.props.navigation.getParam('pushToken', ''),
+    }
     const { initFirebase } = getFirebaseClient()
     const database = initFirebase.database()
-    this.setState({ database })
+    await this.setState({ database, chatId, friend })
     this.getUser()
   }
 
-  getMessage = (timestamp = new Date().getTime()) => {
-    const { database } = this.state
-    const chatId = this.props.navigation.getParam('chatId', '')
-    this.setState({ chatId })
+  componentWillUnmount = () => {
+    this.clearConnection()
+  }
+
+  clearConnection = () => {
+    const { database, chatId } = this.state
     const doc = `chats/${chatId}`
-    database.ref(doc).orderByChild('timestamp').endAt(timestamp).limitToLast(10).once('value')
-      .then(async (snapshot) => {
-        await this.setState({ messagesTemp: snapshot.val() })
-        this.appendMessage()
-        this.watchMessage()
-      })
-    this.setState({ loading: false })
+    database.ref(doc).off()
   }
 
   getUser = () => {
+    const { database } = this.state
     onAuthStateChanged()
-      .then(async (user) => {
-        if (user) {
-          await this.setState({ user })
-          this.getMessage()
+      .then(async (userTemp) => {
+        if (userTemp) {
+          const doc = `users/${userTemp.uid}`
+          database.ref(doc).once('value')
+            .then(async (snapshot) => {
+              const temp = snapshot.val()
+              const user = {
+                uid: userTemp.uid,
+                ...temp,
+              }
+              await this.setState({ user, loading: false })
+              this.watchMessage()
+            })
         } else {
           this.props.navigation.replace('Login')
         }
       })
   }
 
-  appendMessage = () => {
-    const { messagesTemp, user } = this.state
-    const msgTemp = []
-    if (messagesTemp) {
-      Object.keys(messagesTemp).forEach((key) => {
-        msgTemp.push(messagesTemp[key])
-      })
-    }
-    const messages = msgTemp.map(el => ({
-      _id: el.timestamp,
-      text: el.message,
-      createdAt: new Date(el.timestamp),
-      user: {
-        _id: user.uid === el.uid ? 1 : 2,
-        avatar: 'https://placeimg.com/140/140/any',
-      }
-    }))
-    this.setState(previousState => ({
-      messages: GiftedChat.append(previousState.messages, messages),
-    }))
-  }
-
   watchMessage = () => {
-    const { database, chatId, user } = this.state
+    const { database, chatId, user, friend } = this.state
     const doc = `chats/${chatId}`
-    database.ref(doc).limitToLast(1).on('child_added', (snapshot) => {
-      if (isFirst) {
-        isFirst = false
-      } else {
-        const msg = snapshot.val()
-        if (msg.uid !== user.uid) {
-          const messages = [{
-            _id: msg.timestamp,
-            text: msg.message,
-            createdAt: new Date(msg.timestamp),
-            user: {
-              _id: 2,
-              avatar: 'https://placeimg.com/140/140/any',
-            }
-          }]
-          this.setState(previousState => ({
-            messages: GiftedChat.append(previousState.messages, messages),
-          }))
+    database.ref(doc).limitToLast(50).on('child_added', (snapshot) => {
+      const msg = snapshot.val()
+      const messages = [{
+        _id: `${msg.timestamp}`,
+        text: msg.message,
+        createdAt: new Date(msg.timestamp),
+        user: {
+          _id: msg.uid,
+          avatar: msg.uid === user.uid ? user.avatar : friend.avatar,
         }
-      }
+      }]
+      this.setState(previousState => ({
+        messages: GiftedChat.append(previousState.messages, messages),
+      }))
     })
   }
 
   addMessageToDatabase = async (messages) => {
-    const doc = `chats/${this.state.chatId}`
-    const { database } = this.state
-    let sort = 0
-    await database.ref(doc).limitToLast(5).once('child_added')
-      .then((snapshot) => {
-        const data = snapshot.val()
-        sort = data.sort
-      })
+    const { user, chatId, friend } = this.state
+    const doc = `chats/${chatId}`
     const [msg] = messages
-    const { user } = this.state
     const timestamp = new Date().getTime()
     const data = {
       timestamp,
       message: msg.text,
       type: 'text',
       uid: user.uid,
-      sort: sort - 1,
-      name: user.displayName || user.email,
-      avatar: user.photoURL || 'https://i.pinimg.com/originals/a6/58/32/a65832155622ac173337874f02b218fb.png',
     }
-    
     await pushDatabase(doc, data)
-    await sendPushNotification('{{friend token}}', 'ข้อความใหม่ส่งถึงคุณ!', msg.text)
+    await sendPushNotification(friend.pushToken, 'ข้อความใหม่ส่งถึงคุณ!', msg.text)
   }
 
   onSend = (messages = []) => {
-    
     this.addMessageToDatabase(messages)
-    this.setState(previousState => ({
-      messages: GiftedChat.append(previousState.messages, messages),
-    }))
   }
 
   render() {
+    const { user, loading } = this.state
     return (
-      <Container loading={this.state.loading} >
-        <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding" keyboardVerticalOffset={100}>
+      <Container loading={loading} >
+        <KeyboardAvoidingView
+          style={{ flex: 1 }}
+          behavior="padding"
+          keyboardVerticalOffset={Platform.OS === 'ios' ? 50 : 100}>
           <GiftedChat
             messages={this.state.messages}
             onSend={messages => this.onSend(messages)}
             user={{
-              _id: 1,
+              _id: user ? user.uid : '',
             }}
           />
         </KeyboardAvoidingView>

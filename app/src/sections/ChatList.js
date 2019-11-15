@@ -1,24 +1,22 @@
 import React, { Component } from 'react';
-import { FlatList, StyleSheet, Text, View, TouchableHighlight } from 'react-native';
+import { FlatList, StyleSheet, Text, View, TouchableHighlight, Image } from 'react-native';
 
 export default class FlatListBasics extends Component {
     render() {
+        const { navigate } = this.props.navigation
         return (
             <View style={styles.container}>
                 <FlatList
-                    data={[
-                        { key: 'Devin' },
-                        { key: 'Jackson' },
-                        { key: 'James' },
-                        { key: 'Joel' },
-                        { key: 'John' },
-                        { key: 'Jillian' },
-                        { key: 'Jimmy' },
-                        { key: 'Julie' },
-                    ]}
+                    data={this.props.chatData}
+                    keyExtractor={item => `${item.chatId}`}
                     renderItem={({ item }) =>
-                        <TouchableHighlight onPress={() => {alert('test')}} style={{borderBottomColor: '#ddd', borderBottomWidth: 1}}>
-                            <Text style={styles.item}>{item.key}</Text>
+                        <TouchableHighlight onPress={() => {
+                            navigate('Chat', item)
+                        }} style={{ borderBottomColor: '#ddd', borderBottomWidth: 1 }}>
+                            <View style={{flexDirection: 'row', marginHorizontal: 10, marginVertical: 5, alignItems: 'flex-start'}}>
+                                <Image source={{uri: item.avatar}} style={{width: 60, height: 60, borderRadius: 30}} />
+                                <Text style={styles.item}>{item.name}</Text>
+                            </View>
                         </TouchableHighlight>
                     }
                 />
