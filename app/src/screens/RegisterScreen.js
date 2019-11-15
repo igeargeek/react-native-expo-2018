@@ -23,7 +23,6 @@ class RegisterScreen extends React.Component {
 
         setDatabase('users/'+data.user.uid, {
           name: name,
-          email: email,
         })
         this.props.navigation.navigate({ 
           routeName: 'Profile',
