@@ -14,7 +14,7 @@ class ProfileScreen extends React.Component {
 
   state = {
     image: null,
-    hasCameraPermission: null,
+    hasCameraPermission: false,
     type: Camera.Constants.Type.back,
     userId: null
   }
@@ -28,13 +28,12 @@ class ProfileScreen extends React.Component {
   }
 
   getPermissionAsync = async () => {
-    const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
-    const { statusCamera } = await Permissions.askAsync(Permissions.CAMERA);
+    const cameraRoll = await Permissions.askAsync(Permissions.CAMERA_ROLL);
 
-    if (status !== 'granted' && statusCamera !== 'granted') {
+    if (cameraRoll.status !== 'granted') {
       alert('Sorry, we need camera roll permissions to make this work!');
     }
-    this.setState({ hasCameraPermission: status === 'granted' });
+    this.setState({ hasCameraPermission: true });
 
   }
 
@@ -44,15 +43,26 @@ class ProfileScreen extends React.Component {
       quality: 1
     });
   
-    console.log(result);
-
     if (!result.cancelled) {
       this.setState({ image: result.uri });
-      const url = await uploadImage(result.uri)
-      setDatabase('users/' + this.state.userId + '/avatar', url)
-      this.props.navigation.replace('ChatRoom')
     }
+  }
+
+  onTakePhoto = (data) => {
+    this.setState({
+      image: data
+    });
   };
+
+  saveImage = async () => {
+    if (this.state.image == null) {
+      alert('please choose a photo')
+      return
+    }
+    const url = await uploadImage(this.state.image)
+    setDatabase('users/' + this.state.userId + '/avatar', url)
+    this.props.navigation.replace('ChatRoom')
+  }
 
 
   render() {
@@ -69,6 +79,14 @@ class ProfileScreen extends React.Component {
             title="Pick an image from camera roll"
             onPress={this._pickImage}
           />
+
+          <Button
+            title="Take a picture from camera"
+            onPress={() => this.props.navigation.navigate('Camera', { onTakePhoto: this.onTakePhoto })}
+          />
+
+          <Button title="Register" onPress={this.saveImage} />
+
         </SafeAreaView>
       </Container>
     )
