@@ -6,6 +6,7 @@ import ChatRoomScreen from './src/screens/ChatRoomScreen'
 import RegisterScreen from './src/screens/RegisterScreen'
 import ProfileScreen from './src/screens/ProfileScreen'
 import AddFriendScreen from './src/screens/AddFriendScreen'
+import CameraScreen from './src/screens/CameraScreen'
 
 const MainNavigator = createStackNavigator({
   LoginScreen: { screen: LoginScreen },
@@ -14,6 +15,7 @@ const MainNavigator = createStackNavigator({
   AddFriend: { screen: AddFriendScreen },
   ChatRoom: { screen: ChatRoomScreen },
   Chat: { screen: ChatScreen },
+  Camera: { screen: CameraScreen}
 });
 
 const App = createAppContainer(MainNavigator);
