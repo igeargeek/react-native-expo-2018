@@ -13,7 +13,7 @@ class ChatRoomScreen extends React.Component {
     headerRight: () => (
       <TouchableHighlight onPress={() => {
         navigation.navigate('AddFriend')
-      }} style={{ marginLeft: -50 }} >
+      }} style={{ padding: 10 }} >
         <Ionicons name="md-person-add" size={32} color="#333" />
       </TouchableHighlight>
     ),
@@ -26,7 +26,7 @@ class ChatRoomScreen extends React.Component {
           console.log(error)
           alert('user ไม่ถูกต้อง')
         })
-        }}>
+        }} style={{ padding: 10 }} >
         <Text>Logout</Text>
       </TouchableHighlight>
     ),
