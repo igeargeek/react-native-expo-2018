@@ -42,6 +42,7 @@ export default class CameraScanner extends Component {
                 setDatabase(`friends/${data}/${user.uid}`, {
                     chatRoomID: timestamp,
                 })
+                this.props.onChangePage()
             }
         });
         
