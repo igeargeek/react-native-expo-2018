@@ -16,16 +16,12 @@ class LoginScreen extends React.Component {
     loading: false,
     email: '',
     password: '',
-    pushToken: '',
   }
 
   componentDidMount = async () => {
-    const token = await pushNotificationToken()
-    this.setState({ pushToken: token })
     onAuthStateChanged()
       .then((user) => {
         if (user) {
-          setDatabase('users/' + user.uid + '/pushToken', this.state.pushToken)
           this.props.navigation.replace('ChatRoom')
         } else {
           this.setState({ authLoading: false })
@@ -33,12 +29,13 @@ class LoginScreen extends React.Component {
       })
   }
 
-  login = () => {
+  login = async () => {
+    const token = await pushNotificationToken()
     this.setState({ loading: true })
     const { email, password } = this.state
     login(email, password)
       .then((data) => {
-        setDatabase('users/' + data.uid + '/pushToken', this.state.pushToken)
+        setDatabase('users/' + data.uid + '/pushToken', token)
         this.props.navigation.replace('ChatRoom')
       })
       .catch(() => {
@@ -78,7 +75,6 @@ class LoginScreen extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    // backgroundColor: 'red',
     height: '100%',
     justifyContent: 'center',
     alignItems: 'center',

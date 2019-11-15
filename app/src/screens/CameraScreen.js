@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Text, StyleSheet, View, Button, TouchableOpacity } from 'react-native'
+import { Text, View, Button, TouchableOpacity } from 'react-native'
 import * as Permissions from 'expo-permissions';
 import { Camera } from 'expo-camera';
 import { Ionicons } from '@expo/vector-icons'
@@ -78,5 +78,3 @@ export default class CameraScreen extends Component {
         )
     }
 }
-
-const styles = StyleSheet.create({})

@@ -2,7 +2,6 @@ import React from 'react'
 import { View, TouchableHighlight, Text } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 import getDatabase from '../libs/firebase/getDatabase'
-import setDatabase from '../libs/firebase/setDatabase'
 import ChatList from '../sections/ChatList'
 import logout from '../libs/firebase/logout'
 import user from '../libs/firebase/getUserInfo'
@@ -22,17 +21,17 @@ class ChatRoomScreen extends React.Component {
         logout().then((data) => {
           navigation.replace('LoginScreen')
         })
-        .catch((error) => {
-          console.log(error)
-          alert('user ไม่ถูกต้อง')
-        })
-        }} style={{ padding: 10 }} >
+          .catch((error) => {
+            console.log(error)
+            alert('user ไม่ถูกต้อง')
+          })
+      }} style={{ padding: 10 }} >
         <Text>Logout</Text>
       </TouchableHighlight>
     ),
   })
 
-  state = { 
+  state = {
     userInfo: {},
     chatData: []
   }
@@ -50,31 +49,31 @@ class ChatRoomScreen extends React.Component {
     })
   }
 
-  getChatData = () => {
-    getDatabase(`chatRooms/${user.currentUser.uid}`, (data) => {
-      let result = Object.keys(data).map(function(key) {
-        return {...data[key], chatId: key};
-      });
-
-      this.setState({
-        chatData: result
+  getChatData = async () => {
+    await getDatabase(`friends/${user.currentUser.uid}`, (data) => {
+      const promise = Object.keys(data).map((friendId) => {
+        return new Promise((resolve) => {
+          getDatabase(`users/${friendId}`, (friend) => {
+            resolve({
+              chatId: data[friendId].chatRoomID,
+              uid: friend.uid,
+              name: friend.name,
+              avatar: friend.avatar,
+              pushToken: friend.pushToken,
+            })
+          })
+        })
+      })
+      Promise.all(promise).then((chatData) => {
+        this.setState({ chatData })
       })
     })
-  }
-
-  addData = () => {
-    setDatabase('users/4', {
-      username: 'karn99',
-      email: 'karn5@mail.com',
-    });
   }
 
   render() {
     const { navigation } = this.props;
     return (
-      // <Button title="Go to Jane's profile" onPress={() => navigate('ChatRoom', { name: 'Jane' })} />
       <View style={{ width: '100%', height: '100%' }}>
-        {/* <Button title="Add user" onPress={this.addData} /> */}
         <ChatList navigation={navigation} chatData={this.state.chatData} />
       </View>
     )

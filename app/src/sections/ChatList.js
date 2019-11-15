@@ -8,7 +8,7 @@ export default class FlatListBasics extends Component {
             <View style={styles.container}>
                 <FlatList
                     data={this.props.chatData}
-                    keyExtractor={item => item.chatId}
+                    keyExtractor={item => `${item.chatId}`}
                     renderItem={({ item }) =>
                         <TouchableHighlight onPress={() => {
                             navigate('Chat', item)
