@@ -4,7 +4,7 @@ import getFirebaseClient from '../libs/firebase/getClient'
 
 export default class MyQrCode extends Component {
     state = {
-        uid: '12345',
+        uid: '',
     }
     componentDidMount = () => {
         const { firebase } = getFirebaseClient()
