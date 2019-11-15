@@ -5,6 +5,7 @@ import login from '../libs/firebase/login'
 import setDatabase from '../libs/firebase/setDatabase'
 import onAuthStateChanged from '../libs/firebase/onAuthStateChanged'
 import { pushNotificationToken } from '../libs/notification'
+// import logout from '../libs/firebase/logout'
 
 class LoginScreen extends React.Component {
   static navigationOptions = {
@@ -20,11 +21,12 @@ class LoginScreen extends React.Component {
   }
 
   componentDidMount = async () => {
-    const token = await pushNotificationToken()
-    this.setState({ pushToken: token })
+    // logout()
     onAuthStateChanged()
-      .then((user) => {
+      .then(async (user) => {
         if (user) {
+          const token = await pushNotificationToken()
+          this.setState({ pushToken: token })
           setDatabase('users/' + user.uid + '/pushToken', this.state.pushToken)
           this.props.navigation.replace('ChatRoom')
         } else {

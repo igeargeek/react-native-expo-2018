@@ -22,17 +22,17 @@ class ChatRoomScreen extends React.Component {
         logout().then((data) => {
           navigation.replace('LoginScreen')
         })
-        .catch((error) => {
-          console.log(error)
-          alert('user ไม่ถูกต้อง')
-        })
-        }} style={{ padding: 10 }} >
+          .catch((error) => {
+            console.log(error)
+            alert('user ไม่ถูกต้อง')
+          })
+      }} style={{ padding: 10 }} >
         <Text>Logout</Text>
       </TouchableHighlight>
     ),
   })
 
-  state = { 
+  state = {
     userInfo: {},
     chatData: []
   }
@@ -50,14 +50,23 @@ class ChatRoomScreen extends React.Component {
     })
   }
 
-  getChatData = () => {
-    getDatabase(`chatRooms/${user.currentUser.uid}`, (data) => {
-      let result = Object.keys(data).map(function(key) {
-        return {...data[key], chatId: key};
-      });
-
-      this.setState({
-        chatData: result
+  getChatData = async () => {
+    await getDatabase(`friends/${user.currentUser.uid}`, (data) => {
+      const promise = Object.keys(data).map((friendId) => {
+        return new Promise((resolve) => {
+          getDatabase(`users/${friendId}`, (friend) => {
+            resolve({
+             chatId: data[friendId].chatRoomID,
+             name: friend.name,
+             avatar: friend.avatar
+           })
+         })
+        })
+      })
+      Promise.all(promise).then((chatData) => {
+        this.setState({
+          chatData
+        })
       })
     })
   }
