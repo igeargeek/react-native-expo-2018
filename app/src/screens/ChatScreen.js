@@ -87,7 +87,7 @@ class ChatScreen extends React.Component {
     })
   }
 
-  addMessageToDatabase = async (messages) => {
+  onSend = async (messages) => {
     const { user, chatId, friend } = this.state
     const doc = `chats/${chatId}`
     const [msg] = messages
@@ -102,14 +102,9 @@ class ChatScreen extends React.Component {
     await sendPushNotification(friend.pushToken, 'ข้อความใหม่ส่งถึงคุณ!', msg.text)
   }
 
-  onSend = (messages = []) => {
-    this.addMessageToDatabase(messages)
-  }
-
   render() {
-    const { user, loading } = this.state
     return (
-      <Container loading={loading} >
+      <Container loading={this.state.loading} >
         <KeyboardAvoidingView
           style={{ flex: 1 }}
           behavior="padding"
@@ -118,7 +113,7 @@ class ChatScreen extends React.Component {
             messages={this.state.messages}
             onSend={messages => this.onSend(messages)}
             user={{
-              _id: user ? user.uid : '',
+              _id: this.state.user ? this.state.user.uid : '',
             }}
           />
         </KeyboardAvoidingView>
