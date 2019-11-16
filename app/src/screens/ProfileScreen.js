@@ -3,7 +3,6 @@ import { View, Text, SafeAreaView, Image, Button, TouchableOpacity } from 'react
 import Container from '../components/Container'
 import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
-import { Camera } from 'expo-camera';
 import uploadImage from '../libs/firebase/uploadImage'
 import setDatabase from '../libs/firebase/setDatabase'
 import { Ionicons } from '@expo/vector-icons'
@@ -16,7 +15,6 @@ class ProfileScreen extends React.Component {
   state = {
     image: null,
     hasCameraPermission: false,
-    type: Camera.Constants.Type.back,
     userId: null
   }
 
