@@ -275,7 +275,7 @@ const uploadImage = async(uri) => {
 
     const response = await fetch(uri);
     const blob = await response.blob();
-    const ref = firebase.storage().ref("images/profiles").child(`${new Date().getTime()}.jpg`);
+    const ref = firebase.storage().ref().child(`${new Date().getTime()}.jpg`);
     let urlImage
     await ref.put(blob).then(() => {
         urlImage =  ref.getDownloadURL()
