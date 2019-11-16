@@ -1,20 +1,20 @@
 # Push notification
 
-6.1. ติดตั้ง `expo-constants` และ `expo-permissions`
+7.1. ติดตั้ง `expo-constants` และ `expo-permissions`
 
-6.2. สร้างไฟล์ `/src/libs/notification.js`
+7.2. สร้างไฟล์ `/src/libs/notification.js`
 
 ``` js
 import { Notifications } from 'expo'
 import * as Permissions from 'expo-permissions'
 import Constants from 'expo-constants'
 
-// 6.3 ส่วนของการตรวจสอบ Notification
+// 7.3 ส่วนของการตรวจสอบ Notification
 
-// 6.8 ส่วนของการส่ง Push notification
+// 7.8 ส่วนของการส่ง Push notification
 ```
 
-6.3 แก้โค้ดที่ไฟล์ `/src/libs/notification.js`
+7.3 แก้โค้ดที่ไฟล์ `/src/libs/notification.js`
 ``` js
 export const pushNotificationToken = async () => {
   if (Constants.isDevice) {
@@ -39,12 +39,12 @@ export const pushNotificationToken = async () => {
 }
 ```
 
-6.4 แก้โค้ดที่ไฟล์ `/src/screens/LoginScreen.js`
+7.4 แก้โค้ดที่ไฟล์ `/src/screens/LoginScreen.js`
 ``` js
 import { pushNotificationToken } from '../libs/notification'
 ```
 
-6.5 แก้โค้ดที่ไฟล์ `/src/screens/LoginScreen.js`
+7.5 แก้โค้ดที่ไฟล์ `/src/screens/LoginScreen.js`
 ``` js
   login = async () => {
     const token = await pushNotificationToken() // เพิ่มตรงนี้
@@ -62,7 +62,7 @@ import { pushNotificationToken } from '../libs/notification'
   }
 ```
 
-6.6 แก้โค้ดที่ไฟล์ `/src/screens/ChatRoomScreen.js`
+7.6 แก้โค้ดที่ไฟล์ `/src/screens/ChatRoomScreen.js`
 ``` js
   getChatData = async () => {
     await getDatabase(`friends/${user.currentUser.uid}`, (data) => {
@@ -86,7 +86,7 @@ import { pushNotificationToken } from '../libs/notification'
   }
 ```
 
-6.7 แก้โค้ดที่ไฟล์ `/src/screens/ChatScreen.js`
+7.7 แก้โค้ดที่ไฟล์ `/src/screens/ChatScreen.js`
 ``` js
   componentDidMount = async () => {
     const chatId = this.props.navigation.getParam('chatId', '')
@@ -103,7 +103,7 @@ import { pushNotificationToken } from '../libs/notification'
   }
 ```
 
-6.8 แก้โค้ดที่ไฟล์ `/src/libs/notification.js`
+7.8 แก้โค้ดที่ไฟล์ `/src/libs/notification.js`
 ``` js
 export const sendPushNotification = async (token, title, text) => {
   const message = {
@@ -126,12 +126,12 @@ export const sendPushNotification = async (token, title, text) => {
 };
 ```
 
-6.9 แก้โค้ดที่ไฟล์ `/src/screens/ChatScreen.js`
+7.9 แก้โค้ดที่ไฟล์ `/src/screens/ChatScreen.js`
 ``` js
 import { sendPushNotification } from '../libs/notification'
 ```
 
-6.10 แก้โค้ดที่ไฟล์ `/src/screens/ChatScreen.js`
+7.10 แก้โค้ดที่ไฟล์ `/src/screens/ChatScreen.js`
 ``` js
   addMessageToDatabase = async (messages) => {
     const { user, chatId, friend } = this.state
