@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Text, SafeAreaView, StyleSheet, TextInput, Button, Image } from 'react-native'
+import { View, SafeAreaView, StyleSheet, TextInput, Button } from 'react-native'
 import Container from '../components/Container'
 import register from '../libs/firebase/register'
 import setDatabase from '../libs/firebase/setDatabase'
