@@ -304,7 +304,7 @@ export default uploadImage
 
 ```
 
-3.19  import uploadImage function ในไฟล์ `/src/libs/firebase/uploadImage.js`
+3.19  import uploadImage function ในไฟล์ `/src/screens/ProfileScreen.js`
 ``` js
 
 import uploadImage from '../libs/firebase/uploadImage'
@@ -500,39 +500,38 @@ snap = async () => {
 
 ```
 
-3.28 สร้างไฟล์ `/src/screens/ChatRoomScreen.js`
+3.28 เพิ่ม header right ไฟล์ `/src/screens/ChatRoomScreen.js`
 ``` js
 
 import React from 'react'
 import { View, TouchableHighlight, Text } from 'react-native'
 
-class ChatRoomScreen extends React.Component {
-
-  render() {
-    const { navigation } = this.props;
-    return (
-     null
-    )
+static navigationOptions = ({ navigation }) => ({
+    title: 'Chat room',
+    headerRight: () => (
+      <TouchableHighlight onPress={() => {
+        navigation.navigate('AddFriend')
+      }} style={{ padding: 10 }} >
+        <Ionicons name="md-person-add" size={32} color="#333" />
+      </TouchableHighlight>
+    ),
+    headerLeft: () => (
+      <TouchableHighlight onPress={() => {
+        logout().then((data) => {
+          navigation.replace('LoginScreen')
+        })
+          .catch((error) => {
+            console.log(error)
+            alert('user ไม่ถูกต้อง')
+          })
+      }} style={{ padding: 10 }} >
+        <Text>Logout</Text>
+      </TouchableHighlight>
+    ),
   }
-}
-
-export default ChatRoomScreen
 
 ```
 
-3.29 แก้โค้ดที่ไฟล์ `/App.js`
-``` js
-
-import ChatRoomScreen from './src/screens/ChatRoomScreen'
-
-```
-
-3.30 แก้โค้ดที่ไฟล์ `/App.js`
-``` js
-
-ChatRoom: { screen: ChatRoomScreen },
-
-```
 
 
 
