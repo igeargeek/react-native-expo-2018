@@ -49,16 +49,16 @@ import Container from '../components/Container'
         <TabNavigator.Item
             selected={this.state.selectedTab === 'Scan'}
             title="Scan"
-            renderIcon={() => <Image style={{width: 25, height: 25}} source={require('../../assets/camera.png')} />}
-            renderSelectedIcon={() => <Image style={{width: 25, height: 25}} source={require('../../assets/camera.png')} />}
+            renderIcon={() => <Image style={{width: 25, height: 25}} source={require('...')} />}
+            renderSelectedIcon={() => <Image style={{width: 25, height: 25}} source={require('...')} />}
             onPress={() => this.setState({ selectedTab: 'Scan' })}>
-            <CameraScanner onChangePage={() => this.props.navigation.goBack() }/>
+            <CameraScanner onChangePage={() => ..... }/> // change to chatlist page
         </TabNavigator.Item>
         <TabNavigator.Item
             selected={this.state.selectedTab === 'myQrCode'}
             title="My QR Code"
-            renderIcon={() => <Image style={{width: 25, height: 25}} source={require('../../assets/QRcode.png')} />}
-            renderSelectedIcon={() => <Image style={{width: 25, height: 25}} source={require('../../assets/QRcode.png')} />}
+            renderIcon={() => <Image style={{width: 25, height: 25}} source={require('...')} />}
+            renderSelectedIcon={() => <Image style={{width: 25, height: 25}} source={require('...')} />}
             onPress={() => this.setState({ selectedTab: 'myQrCode' })}>
             <MyQrCode />
         </TabNavigator.Item>
@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
   componentDidMount = () => {
     const { firebase } = getFirebaseClient()
     let user = firebase.auth().currentUser;
-    this.setState({ uid: user.uid })
+    this.setState({ .... }) // set state uid
   }
 ```
 
@@ -146,9 +146,7 @@ export default class CameraScanner extends Component {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        flexDirection: 'column',
-        justifyContent: 'flex-end',
+        // set conponent center
     },
 });
 ```
@@ -214,15 +212,15 @@ handleBarCodeScanned = ({ type, data }) => {
                 'Sorry',
                 'Your are both already friends!',
                 [
-                  {text: 'OK', onPress: () => this.props.onChangePage()},
+                  {text: 'OK', onPress: () => .... }, // call props to change page
                 ],
               );
         } else {
             let timestamp = Date.now()
-            setDatabase(`friends/${user.uid}/${data}`, {
+            setDatabase(`.....`, { // path firebase to create friends database
                 chatRoomID: timestamp,
             })
-            setDatabase(`friends/${data}/${user.uid}`, {
+            setDatabase(`.....`, { // path firebase to create friends database
                 chatRoomID: timestamp,
             })
             this.props.onChangePage()
