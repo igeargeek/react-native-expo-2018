@@ -1,36 +1,36 @@
 # Chat
 
-5.1. สร้างไฟล์ `/src/screens/ChatScreen.js`
+6.1. สร้างไฟล์ `/src/screens/ChatScreen.js`
 ``` js
 import React from 'react'
 import { KeyboardAvoidingView, Platform } from 'react-native'
-// 5.3 Import Container component
-// 5.6 Import Firebase
-// 5.14 Import push database to firebase
-// 5.10 Import GiftedChat
+// 6.3 Import Container component
+// 6.6 Import Firebase
+// 6.14 Import push database to firebase
+// 6.10 Import GiftedChat
 
 class ChatScreen extends React.Component {
   static navigationOptions = {
     title: 'Chat',
   }
 
-  // 5.4 เพิ่ม state
+  // 6.4 เพิ่ม state
 
-  // 5.7 รับข้อมูล user จาก chat room
+  // 6.7 รับข้อมูล user จาก chat room
 
-  //  5.20 component will unmount
+  //  6.20 component will unmount
 
-  //  5.19 clear connection
+  //  6.19 clear connection
 
-  // 5.8 ดึงข้อมูล user
+  // 6.8 ดึงข้อมูล user
 
-  // 5.12 ส่ง message
+  // 6.12 ส่ง message
 
-  // 5.17 เพิ่ม watch database
+  // 6.17 เพิ่ม watch database
 
   render() {
     return (
-      null // 5.5 ใช้ Container
+      null // 6.5 ใช้ Container
     );
   }
 }
@@ -38,15 +38,15 @@ class ChatScreen extends React.Component {
 export default ChatScreen
 ```
 
-5.2 แก้ไฟล์ `/App.js` เพิ่ม navigation stack
+6.2 แก้ไฟล์ `/App.js` เพิ่ม navigation stack
 
 
-5.3 แก้ไฟล์ `/src/screens/ChatScreen.js`
+6.3 แก้ไฟล์ `/src/screens/ChatScreen.js`
 ``` js
   import Container from '../components/Container'
 ```
 
-5.4 เพิ่ม state ที่ไฟล์ `/src/screens/ChatScreen.js`
+6.4 เพิ่ม state ที่ไฟล์ `/src/screens/ChatScreen.js`
 ``` js
   state = {
     database: null,
@@ -58,7 +58,7 @@ export default ChatScreen
   }
 ```
 
-5.5 แก้ไฟล์ `/src/screens/ChatScreen.js`
+6.5 แก้ไฟล์ `/src/screens/ChatScreen.js`
 ``` js
 <Container loading={this.state.loading} >
   <KeyboardAvoidingView
@@ -66,19 +66,19 @@ export default ChatScreen
     behavior="padding"
     keyboardVerticalOffset={Platform.OS === 'ios' ? 50 : 100}>
       { 
-        // 5.11
+        // 6.11
       }
   </KeyboardAvoidingView>
 </Container>
 ```
 
-5.6 แก้ไฟล์​ `/src/screens/ChatScreen.js`
+6.6 แก้ไฟล์​ `/src/screens/ChatScreen.js`
 ``` js
 import onAuthStateChanged from '../libs/firebase/onAuthStateChanged'
 import getFirebaseClient from '../libs/firebase/getClient'
 ```
 
-5.7 แก้ไฟล์ `/src/screens/ChatScreen.js` ดึงข้อมูลที่ส่งมาจากหน้า Chat Room
+6.7 แก้ไฟล์ `/src/screens/ChatScreen.js` ดึงข้อมูลที่ส่งมาจากหน้า Chat Room
 ``` js
   componentDidMount = async () => {
     const chatId = this.props.navigation.getParam('chatId', '')
@@ -95,7 +95,7 @@ import getFirebaseClient from '../libs/firebase/getClient'
   }
 ```
 
-5.8 แก้ไฟล์​ `/src/screens/ChatScreen.js` ฟังก์ชันดึงข้อมูล user
+6.8 แก้ไฟล์​ `/src/screens/ChatScreen.js` ฟังก์ชันดึงข้อมูล user
 ``` js
 getUser = () => {
   const { database } = this.state
@@ -111,7 +111,7 @@ getUser = () => {
               ...temp,
             }
             await this.setState({ user, loading: false })
-            // 5.18 เรียกฟังก์ชัน watch database
+            // 6.18 เรียกฟังก์ชัน watch database
           })
       } else {
         this.props.navigation.replace('Login')
@@ -120,17 +120,17 @@ getUser = () => {
 }
 ```
 
-5.9 install react-native-gifted-chat
+6.9 install react-native-gifted-chat
 ``` js
 npm install react-native-gifted-chat
 ```
 
-5.10 แก้ไฟล์​ `/src/screens/ChatScreen.js`
+6.10 แก้ไฟล์​ `/src/screens/ChatScreen.js`
 ``` js
 import { GiftedChat } from 'react-native-gifted-chat'
 ```
 
-5.11 แก้ไฟล์ `/src/screens/ChatScreen.js`
+6.11 แก้ไฟล์ `/src/screens/ChatScreen.js`
 ``` js
 <GiftedChat
   messages={this.state.messages}
@@ -141,7 +141,7 @@ import { GiftedChat } from 'react-native-gifted-chat'
 />
 ```
 
-5.12 แก้ไฟล์ `/src/screens/ChatScreen.js` เพิ่ม function  ส่ง message
+6.12 แก้ไฟล์ `/src/screens/ChatScreen.js` เพิ่ม function  ส่ง message
 ``` js
 onSend = (messages) => {
   const { user, chatId, friend } = this.state
@@ -154,11 +154,11 @@ onSend = (messages) => {
     type: 'text',
     uid: user.uid,
   }
-  // 5.15 เพิ่มข้อมูลเข้า database
+  // 6.15 เพิ่มข้อมูลเข้า database
 }
 ```
 
-5.13 สร้างไฟล์ `/src/libs/firebase/pushDatabase.js`
+6.13 สร้างไฟล์ `/src/libs/firebase/pushDatabase.js`
 ``` js
 import getFirebaseClient from './getClient'
 
@@ -171,19 +171,19 @@ const pushDatabase = async (doc, data) => {
 export default pushDatabase
 ```
 
-5.14 แก้ไฟล์ `/src/screens/ChatScreen.js`
+6.14 แก้ไฟล์ `/src/screens/ChatScreen.js`
 ``` js
 import pushDatabase from '../libs/firebase/pushDatabase'
 ```
 
-5.15 แก้ไฟล์ `/src/screens/ChatScreen.js` เพิ่มข้อมูลเข้า database
+6.15 แก้ไฟล์ `/src/screens/ChatScreen.js` เพิ่มข้อมูลเข้า database
 ``` js
 pushDatabase(doc, data)
 ```
 
-5.16 เช็คข้อมูลที่ Firebase realtime database
+6.16 เช็คข้อมูลที่ Firebase realtime database
 
-5.17 แก้ไฟล์ `/src/screens/ChatScreen.js` เพิ่มฟังก์ชัน watch database
+6.17 แก้ไฟล์ `/src/screens/ChatScreen.js` เพิ่มฟังก์ชัน watch database
 ``` js
   watchMessage = () => {
     const { database, chatId, user, friend } = this.state
@@ -206,12 +206,12 @@ pushDatabase(doc, data)
   }
 ```
 
-5.18 แก้ไฟล์ `/src/screens/ChatScreen.js` เรียกฟังก์ชัน watch message
+6.18 แก้ไฟล์ `/src/screens/ChatScreen.js` เรียกฟังก์ชัน watch message
 ``` js
 this.watchMessage()
 ```
 
-5.19 แก้ไฟล์ `/src/screens/ChatScreen.js` สร้างฟังก์ชัน clear connection
+6.19 แก้ไฟล์ `/src/screens/ChatScreen.js` สร้างฟังก์ชัน clear connection
 ``` js
   clearConnection = () => {
     const { database, chatId } = this.state
@@ -220,7 +220,7 @@ this.watchMessage()
   }
 ```
 
-5.20 แก้ไฟล์ `/src/screens/ChatScreen.js`
+6.20 แก้ไฟล์ `/src/screens/ChatScreen.js`
 ``` js
   componentWillUnmount = () => {
     this.clearConnection()
