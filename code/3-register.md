@@ -75,7 +75,22 @@ export default register
 
 ```
 
-3.6 เพิ่ม state ในไฟล์ `/src/screens/RegisterScreen.js`
+3.6 สร้างไฟล์ `/src/libs/firebase/setDatabase.js`
+``` js
+
+import getFirebaseClient from './getClient'
+
+const setDatabase = async (doc, data) => {
+  const { initFirebase } = getFirebaseClient()
+  const database = initFirebase.database()
+  await database.ref(doc).set(data)
+}
+
+export default setDatabase
+
+```
+
+3.7 เพิ่ม state ในไฟล์ `/src/screens/RegisterScreen.js`
 ``` js
 
 state = {
@@ -86,16 +101,16 @@ state = {
 
 ```
 
-3.7 เพิ่ม import ในไฟล์ `/src/screens/RegisterScreen.js`
+
+3.8 เพิ่ม import ในไฟล์ `/src/screens/RegisterScreen.js`
 ``` js
 
-import Container from '../components/Container'
 import register from '../libs/firebase/register'
 import setDatabase from '../libs/firebase/setDatabase'
 
 ```
 
-3.8 เพิ่ม function ในไฟล์ `/src/screens/RegisterScreen.js`
+3.9 เพิ่ม function ในไฟล์ `/src/screens/RegisterScreen.js`
 ``` js
 
 register = () => {
@@ -119,7 +134,7 @@ register = () => {
 
 ```
 
-3.9 เพิ่ม html ในไฟล์ `/src/screens/RegisterScreen.js`
+3.10 เพิ่ม html ในไฟล์ `/src/screens/RegisterScreen.js`
 ``` html
 
 <Container>
@@ -157,7 +172,7 @@ register = () => {
 
 ```
 
-3.10. install  package
+3.11 install  package
 ```
 expo install expo-permissions
 
@@ -167,7 +182,7 @@ expo install expo-camera
 
 ```
 
-3.11. สร้างไฟล์ `/src/screens/ProfileScreen.js`
+3.12 สร้างไฟล์ `/src/screens/ProfileScreen.js`
 ``` js
 
 import React from 'react'
@@ -196,21 +211,21 @@ export default ProfileScreen
 
 ```
 
-3.12 แก้โค้ดที่ไฟล์ `/App.js`
+3.13 แก้โค้ดที่ไฟล์ `/App.js`
 ``` js
 
 import ProfileScreen from './src/screens/ProfileScreen'
 
 ```
 
-3.13 แก้โค้ดที่ไฟล์ `/App.js`
+3.14 แก้โค้ดที่ไฟล์ `/App.js`
 ``` js
 
   Profile: { screen: ProfileScreen },
 
 ```
 
-3.14. import expo permission lib `/src/screens/ProfileScreen.js`
+3.15 import expo permission lib `/src/screens/ProfileScreen.js`
 ``` js
 
 import Container from '../components/Container'
@@ -219,7 +234,7 @@ import * as Permissions from 'expo-permissions';
 
 ```
 
-3.15 เพิ่ม function ในไฟล์ `/src/screens/ProfileScreen.js`
+3.16 เพิ่ม function ในไฟล์ `/src/screens/ProfileScreen.js`
 ``` js
 
 componentDidMount() {
@@ -241,7 +256,7 @@ getPermissionAsync = async () => {
 }
 
 ```
-3.16  เพิ่ม config firebase `/src/libs/firebase/getClient.js`
+3.17  เพิ่ม config firebase `/src/libs/firebase/getClient.js`
 ``` js
 
 import * as firebase from 'firebase';
@@ -265,7 +280,7 @@ export default getClient
 
 ```
 
-3.17  สร้างไฟล์ `/src/libs/firebase/uploadImage.js`
+3.18  สร้างไฟล์ `/src/libs/firebase/uploadImage.js`
 ``` js
 
 import getFirebaseClient from './getClient'
@@ -289,7 +304,7 @@ export default uploadImage
 
 ```
 
-3.18  import uploadImage function ในไฟล์ `/src/libs/firebase/uploadImage.js`
+3.19  import uploadImage function ในไฟล์ `/src/screens/ProfileScreen.js`
 ``` js
 
 import uploadImage from '../libs/firebase/uploadImage'
@@ -298,7 +313,7 @@ import { Ionicons } from '@expo/vector-icons'
 
 ```
 
-3.19  เพิ่ม function ในไฟล์ `/src/screens/ProfileScreen.js`
+3.20  เพิ่ม function ในไฟล์ `/src/screens/ProfileScreen.js`
 ``` js
 
 _pickImage = async () => {
@@ -330,7 +345,7 @@ _pickImage = async () => {
 
 ```
 
-3.20 เพิ่ม html ในไฟล์ `/src/screens/ProfileScreen.js`
+3.21 เพิ่ม html ในไฟล์ `/src/screens/ProfileScreen.js`
 ``` html
 
 <Container>
@@ -367,7 +382,7 @@ _pickImage = async () => {
 
 ```
 
-3.21 สร้างไฟล์ `/src/screens/CameraScreen.js`
+3.22 สร้างไฟล์ `/src/screens/CameraScreen.js`
 
 ``` js
 
@@ -389,21 +404,21 @@ export default class CameraScreen extends Component {
 
 ```
 
-3.22 แก้โค้ดที่ไฟล์ `/App.js`
+3.23 แก้โค้ดที่ไฟล์ `/App.js`
 ``` js
 
 import CameraScreen from './src/screens/CameraScreen'
 
 ```
 
-3.23 แก้โค้ดที่ไฟล์ `/App.js`
+3.24 แก้โค้ดที่ไฟล์ `/App.js`
 ``` js
 
   Camera: { screen: CameraScreen}
 
 ```
 
-3.24 เพิ่ม import lib ในไฟล์ `/src/screens/CameraScreen.js`
+3.25 เพิ่ม import lib ในไฟล์ `/src/screens/CameraScreen.js`
 ``` js
 
 import * as Permissions from 'expo-permissions';
@@ -412,7 +427,7 @@ import { Ionicons } from '@expo/vector-icons'
 
 ```
 
-3.25 เพิ่ม function ในไฟล์ `/src/screens/CameraScreen.js`
+3.26 เพิ่ม function ในไฟล์ `/src/screens/CameraScreen.js`
 ``` js
 componentDidMount() {
     this.getPermissionAsync();
@@ -437,7 +452,7 @@ snap = async () => {
 
 ```
 
-3.26 เพิ่ม View ในไฟล์ `/src/screens/CameraScreen.js`
+3.27 เพิ่ม View ในไฟล์ `/src/screens/CameraScreen.js`
 ``` html
 
 <View style={{ flex: 1 }}>
@@ -485,39 +500,38 @@ snap = async () => {
 
 ```
 
-3.27. สร้างไฟล์ `/src/screens/ChatRoomScreen.js`
+3.28 เพิ่ม header right ไฟล์ `/src/screens/ChatRoomScreen.js`
 ``` js
 
 import React from 'react'
 import { View, TouchableHighlight, Text } from 'react-native'
 
-class ChatRoomScreen extends React.Component {
-
-  render() {
-    const { navigation } = this.props;
-    return (
-     null
-    )
+static navigationOptions = ({ navigation }) => ({
+    title: 'Chat room',
+    headerRight: () => (
+      <TouchableHighlight onPress={() => {
+        navigation.navigate('AddFriend')
+      }} style={{ padding: 10 }} >
+        <Ionicons name="md-person-add" size={32} color="#333" />
+      </TouchableHighlight>
+    ),
+    headerLeft: () => (
+      <TouchableHighlight onPress={() => {
+        logout().then((data) => {
+          navigation.replace('LoginScreen')
+        })
+          .catch((error) => {
+            console.log(error)
+            alert('user ไม่ถูกต้อง')
+          })
+      }} style={{ padding: 10 }} >
+        <Text>Logout</Text>
+      </TouchableHighlight>
+    ),
   }
-}
-
-export default ChatRoomScreen
 
 ```
 
-3.28 แก้โค้ดที่ไฟล์ `/App.js`
-``` js
-
-import ChatRoomScreen from './src/screens/ChatRoomScreen'
-
-```
-
-3.29 แก้โค้ดที่ไฟล์ `/App.js`
-``` js
-
-ChatRoom: { screen: ChatRoomScreen },
-
-```
 
 
 
