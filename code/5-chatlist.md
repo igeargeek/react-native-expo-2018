@@ -23,6 +23,7 @@ export default getDatabase
 
 import React, { Component } from 'react';
 import { FlatList, StyleSheet, Text, View, TouchableHighlight, Image } from 'react-native';
+import getFirebaseClient from '../libs/firebase/getClient'
 
 export default class FlatListBasics extends Component {
     render() {
@@ -88,6 +89,8 @@ componentDidMount() {
 }
 
 getChatData = async () => {
+    const { firebase } = getFirebaseClient()
+    const user = firebase.auth();
     await getDatabase(`friends/${user.currentUser.uid}`, (data) => {
         const promise = Object.keys(data).map((friendId) => {
             return new Promise((resolve) => {
