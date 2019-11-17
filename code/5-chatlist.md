@@ -23,7 +23,6 @@ export default getDatabase
 
 import React, { Component } from 'react';
 import { FlatList, StyleSheet, Text, View, TouchableHighlight, Image } from 'react-native';
-import getFirebaseClient from '../libs/firebase/getClient'
 
 export default class FlatListBasics extends Component {
     render() {
@@ -69,6 +68,8 @@ const styles = StyleSheet.create({
 import { Ionicons } from '@expo/vector-icons'
 import getDatabase from '../libs/firebase/getDatabase'
 import ChatList from '../sections/ChatList'
+import getFirebaseClient from '../libs/firebase/getClient'
+
 
 ```
 
