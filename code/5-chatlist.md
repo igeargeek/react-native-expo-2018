@@ -62,51 +62,29 @@ const styles = StyleSheet.create({
 
 ```
 
-5.3 สร้างไฟล์ `/src/libs/firebase/getUserInfo.js`
-``` js
-
-import getFirebaseClient from './getClient'
-
-const { firebase } = getFirebaseClient()
-
-export default firebase.auth();
-
-```
-
-5.4 เพิ่ม import ไฟล์ `/src/screens/ChatRoomScreen.js`
+5.3 เพิ่ม import ไฟล์ `/src/screens/ChatRoomScreen.js`
 ``` js
 
 import { Ionicons } from '@expo/vector-icons'
 import getDatabase from '../libs/firebase/getDatabase'
 import ChatList from '../sections/ChatList'
-import user from '../libs/firebase/getUserInfo'
 
 ```
 
-5.5 สร้าง state ไฟล์ `/src/screens/ChatRoomScreen.js`
+5.4 สร้าง state ไฟล์ `/src/screens/ChatRoomScreen.js`
 ``` js
 
 state = {
-    userInfo: {},
     chatData: []
   }
 
 ```
 
-5.6 เพิ่ม function get user ไฟล์ `/src/screens/ChatRoomScreen.js`
+5.5 เพิ่ม function get chat data ไฟล์ `/src/screens/ChatRoomScreen.js`
 ``` js
 
 componentDidMount() {
-    this.getUserData()
     this.getChatData()
-}
-
-getUserData = () => {
-    getDatabase(`users/${user.currentUser.uid}`, (data) => {
-        this.setState({
-        userInfo: data
-        })
-    })
 }
 
 getChatData = async () => {
@@ -132,7 +110,7 @@ getChatData = async () => {
 
 ```
 
-5.7 แก้ return ไฟล์ `/src/screens/ChatRoomScreen.js`
+5.6 แก้ return ไฟล์ `/src/screens/ChatRoomScreen.js`
 ``` js
 
 render() {
